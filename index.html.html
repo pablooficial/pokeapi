@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+	<!-- Chamando.style.css/-->
+	<link rel="stylesheet" type="text/css" href="style.css" />
+	  <!-- Efeito animate.style/-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <!-- titulo -->
+    <title>Pokemon</title>
+ 
+<body>
+  <h1>Frontend Test - P.W</h1>
+    <div id="poke_container" class="poke-container"></div>
+
+<script>
+    const poke_container = document.getElementById('poke_container'); 
+    const pokemons_number = 800; //escolha de quantos pokemos aparecera na tela
+    const colors = { //cor do fundo igual ao typo do pokemon
+        fire: '#ca6048',
+        grass: '##4169E1',
+        electric: '#FCF7DE',
+        water: '#6495ED',
+        ground: '#f4e7da',
+        rock: '#d5d5d4',
+        fairy: '#fceaff',
+        poison: '#98d7a5',
+        bug: '#f8d5a3',
+        dragon: '#97b3e6',
+        psychic: '#eaeda1',
+        flying: '#F5F5F5',
+        fighting: '#E6E0D4',
+        normal: '#F5F5F5'
+    };
+    const main_types = Object.keys(colors); 
+    
+    const fetchPokemons = async () => {
+        for (let i = 1; i <= pokemons_number; i++) {
+            await getPokemon(i);
+        }
+    };
+    
+    const getPokemon = async id => {
+        const url = `https://pokeapi.co/api/v2/pokemon/${id}`; 
+        const res = await fetch(url);
+        const pokemon = await res.json();
+        createPokemonCard(pokemon);
+    };
+
+	function createPokemonCard(pokemon) {
+	const pokemonEl = document.createElement('div');
+	pokemonEl.classList.add('pokemon');
+	const poke_types = pokemon.types.map(type => type.type.name);
+	const type = main_types.find(type => poke_types.indexOf(type) > -1);
+		const abilities = pokemon.abilities.map((ability) => ability.ability.name).join(', ').toUpperCase();
+	const name = pokemon.name[0].toUpperCase() + pokemon.name.slice(1);
+	const color = colors[type];
+	pokemonEl.style.backgroundColor = color;
+	const pokeInnerHTML = `
+		<div class="img-container">
+			<img src="https://pokeres.bastionbot.org/images/pokemon/${pokemon.id}.png" alt="${name}" class="img-fluid"/>
+		</div>
+		<div class="info">
+			<p class="animate__animated animate__backInRight">#${pokemon.id
+							.toString()
+							.padStart(3, '0')}</p> 
+			<h3 class="animate__animated animate__swing">${name}</h3>
+			<p class="animate__animated animate__backInLeft">Type: <span>${type}</span></p>
+			<p id='abilities' class="animate__animated animate__backInUp habilidade"><span>Habilidades:</span><br>${abilities}</p>
+		</div>
+	`;
+	pokemonEl.innerHTML = pokeInnerHTML;
+	poke_container.appendChild(pokemonEl);
+}
+	fetchPokemons();
+</script>
+
+</body>
+</html>
